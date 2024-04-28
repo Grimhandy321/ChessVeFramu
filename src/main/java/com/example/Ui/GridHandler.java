@@ -1,3 +1,5 @@
+package com.example.Ui;
+
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;

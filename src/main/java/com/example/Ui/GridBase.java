@@ -1,3 +1,5 @@
+package com.example.Ui;
+
 import javafx.scene.layout.AnchorPane;
 
 public abstract class GridBase {

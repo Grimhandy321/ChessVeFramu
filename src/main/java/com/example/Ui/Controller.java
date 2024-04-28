@@ -1,4 +1,6 @@
-import com.example.gridbaseddraggable.grid.*;
+package com.example.Ui;
+
+import com.example.Game.GameGrid;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
@@ -8,29 +10,23 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-    private int gridSize = 50;
+    private int gridSize = 75;
 
     @FXML
     private AnchorPane pane;
 
-    private GridHandler backgroundGridHandler;
+    private GridHandler gridHandler;
     private DraggableMakerGrid draggableMakerGrid;
     private DraggableMaker draggableMaker = new DraggableMaker();
-    private DraggableMakerGrid2 gridMaker2;
+    private GameGrid gameGrid = new GameGrid();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         draggableMakerGrid = new DraggableMakerGrid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane);
-        gridMaker2 = new DraggableMakerGrid2(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane);
-
-        backgroundGridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane);
-        backgroundGridHandler.updateGrid();
-
-        Component component = new Component(gridSize, 100, 100);
-        pane.getChildren().add(component.getRectangle());
-
-        //draggableMakerGrid.makeDraggable(component);
-        draggableMaker.makeDraggable(component.getRectangle());
+        gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane);
+        gridHandler.updateGrid();
+        Component component = new Component(gridSize, 0, 0);
+        pane.getChildren().add(draggableMakerGrid.makeDraggable(component));
     }
 }
