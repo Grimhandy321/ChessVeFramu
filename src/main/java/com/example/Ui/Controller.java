@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
 
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -26,7 +27,12 @@ public class Controller implements Initializable {
         draggableMakerGrid = new DraggableMakerGrid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane);
         gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane);
         gridHandler.updateGrid();
-        Component component = new Component(gridSize, 0, 0);
-        pane.getChildren().add(draggableMakerGrid.makeDraggable(component));
+        try {
+            for (Component c : gameGrid.getImageGrid()) {
+                pane.getChildren().add(draggableMakerGrid.makeDraggable(c));
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

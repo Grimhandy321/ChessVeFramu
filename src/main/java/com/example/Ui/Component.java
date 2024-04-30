@@ -11,12 +11,12 @@ public class Component {
     private int startPositionX;
     private int startPositionY;
 
-    public Component(int size, int startPositionX, int startPositionY,Image image) {
+    public Component( int startPositionX, int startPositionY,Image image) {
         this.startPositionX = startPositionX;
         this.startPositionY = startPositionY;
         this.image = image;
     }
-    public Component(int size, int startPositionX, int startPositionY) {
+    public Component( int startPositionX, int startPositionY) {
         this.startPositionX = startPositionX;
         this.startPositionY = startPositionY;
         try {

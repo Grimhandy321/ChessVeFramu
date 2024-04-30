@@ -4,6 +4,8 @@ import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class DraggableMakerGrid extends GridBase{
 
     private double mouseAnchorX;
@@ -34,6 +36,13 @@ public class DraggableMakerGrid extends GridBase{
         imageView.setFitWidth(75);
         imageView.setPreserveRatio(true);
         Node node = imageView;
+        AtomicInteger x = new AtomicInteger();
+        AtomicInteger y = new AtomicInteger();
+        node.setOnMousePressed(mouseEvent -> {
+            x.set((int) mouseEvent.getSceneX()/getGridSize() * getGridSize());
+            y.set((int) mouseEvent.getSceneY()/getGridSize() * getGridSize());
+        });
+        node.setOnMouseReleased();
         node.setOnMouseDragged(mouseEvent -> {
             mouseAnchorX = mouseEvent.getSceneX();
             mouseAnchorY = mouseEvent.getSceneY();
