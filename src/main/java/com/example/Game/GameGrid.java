@@ -2,6 +2,7 @@ package com.example.Game;
 
 import com.example.Ui.Component;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -45,7 +46,13 @@ public class GameGrid {
                 case 'p' :  inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png"); break;
                 case 'P' :  inputstream = new FileInputStream("Images\\w_pawn_2x_ns.png"); break;
             }
-            components.add(new Component( (7 -getFileFromIndex(i))  * 75,(7-getRankFromIndex(i)) * 75,new Image(inputstream)));
+            ImageView imageView = new ImageView(new Image(inputstream));
+            imageView.setX((7-getFileFromIndex(i)) * 75);
+            imageView.setY((7 -getRankFromIndex(i))  * 75);
+            imageView.setFitHeight(75);
+            imageView.setFitWidth(75);
+            imageView.setPreserveRatio(true);
+            components.add(new Component( (7 -getFileFromIndex(i))  * 75,(7-getRankFromIndex(i)) * 75,imageView));
         }
         return  components;
     }
@@ -55,16 +62,14 @@ public class GameGrid {
     private static int getFileFromIndex(int index){
         return index % 8;
     }
-    public boolean canGoThere(int rank, int file, boolean color){
-        if(Character.isLowerCase(board[rank * 8 + file]) && color){
-            return true;
-        }
-        return !Character.isLowerCase(board[rank * 8 + file]) && !color;
+    public int getIndexFrom(int rank,int file){
+        return rank * 8 + file;
     }
-
     public GameGrid() {
         PositionFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
-
+    public ArrayList<Point> getValidMovesForPiece(){
+        return new ArrayList<Point>();
+    }
 
 }

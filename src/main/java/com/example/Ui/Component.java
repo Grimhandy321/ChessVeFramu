@@ -1,17 +1,18 @@
 package com.example.Ui;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class Component {
 
-    private Image image;
+    private ImageView image;
     private int startPositionX;
     private int startPositionY;
 
-    public Component( int startPositionX, int startPositionY,Image image) {
+    public Component( int startPositionX, int startPositionY,ImageView image) {
         this.startPositionX = startPositionX;
         this.startPositionY = startPositionY;
         this.image = image;
@@ -21,18 +22,18 @@ public class Component {
         this.startPositionY = startPositionY;
         try {
             FileInputStream inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png");
-            image = new Image(inputstream);
+            image = new ImageView( new Image(inputstream));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    public Image getImage() {
+    public ImageView getImage() {
         return image;
     }
 
-    public void setImage(Image image) {
+    public void setImage(ImageView image) {
         this.image = image;
     }
 
