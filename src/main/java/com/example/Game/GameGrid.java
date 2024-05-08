@@ -1,12 +1,16 @@
 package com.example.Game;
 
 import com.example.Ui.Component;
+import com.github.bhlangonijr.chesslib.move.Move;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.github.bhlangonijr.chesslib.Board;
 
 public class GameGrid {
     public static char[] board = new char[64];
@@ -69,7 +73,13 @@ public class GameGrid {
         PositionFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
     public ArrayList<Point> getValidMovesForPiece(){
+        Board b = new Board();
+        List<Move> moves = b.legalMoves();
+        for (Move m : moves){
+            System.out.println(m.toString());
+        }
         return new ArrayList<Point>();
     }
+
 
 }
