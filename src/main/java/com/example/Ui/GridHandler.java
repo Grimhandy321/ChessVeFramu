@@ -17,9 +17,7 @@ public class GridHandler extends GridBase {
         for(int i = 0; i < getTileAmount(); i++){
             int x = (i % getTilesAcross());
             int y = (i / getTilesAcross());
-
             Rectangle rectangle = new Rectangle(x * getGridSize(),y * getGridSize(),getGridSize(),getGridSize());
-
             if((x + y) % 2 == 0){
                 rectangle.setFill(backgroundColor1);
             } else {

@@ -1,6 +1,9 @@
 package com.example.Game;
 
 import com.example.Ui.Component;
+import com.github.bhlangonijr.chesslib.File;
+import com.github.bhlangonijr.chesslib.Rank;
+import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -9,77 +12,62 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.github.bhlangonijr.chesslib.Board;
 
 public class GameGrid {
-    public static char[] board = new char[64];
-    public void PositionFromFen (String fen) {
-        String[] sections = fen.split(" ");
-        int file = 0;
-        int rank = 7;
-        for (char symbol : sections[0].toCharArray()) {
-            if (symbol == '/') {
-                file = 0;
-                rank--;
-            } else {
-                if (Character.isDigit(symbol)) {
-                    file += (int) Character.getNumericValue(symbol);
-                } else {
-                    board[rank * 8 + file] = symbol;
-                    file++;
-                }
-            }
-        }
-    }
-    public  ArrayList<Component> getImageGrid() throws FileNotFoundException {
-        FileInputStream inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png");
-        ArrayList<Component> components = new ArrayList<>();
-        for (int i = 63; i >= 0 ; i--){
-            switch (board[i]){
-                case 'r' :  inputstream = new FileInputStream("Images\\b_rook_2x_ns.png"); break;
-                case 'R' :  inputstream = new FileInputStream("Images\\w_rook_2x_ns.png"); break;
-                case 'n' :  inputstream = new FileInputStream("Images\\b_knight_2x_ns.png"); break;
-                case 'N' :  inputstream = new FileInputStream("Images\\W_knight_2x_ns.png"); break;
-                case 'b' :  inputstream = new FileInputStream("Images\\b_bishop_2x_ns.png"); break;
-                case 'B' :  inputstream = new FileInputStream("Images\\w_bishop_2x_ns.png"); break;
-                case 'q' :  inputstream = new FileInputStream("Images\\b_queen_2x_ns.png"); break;
-                case 'Q' :  inputstream = new FileInputStream("Images\\w_queen_2x_ns.png"); break;
-                case 'k' :  inputstream = new FileInputStream("Images\\b_king_2x_ns.png"); break;
-                case 'K' :  inputstream = new FileInputStream("Images\\w_king_2x_ns.png"); break;
-                case 'p' :  inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png"); break;
-                case 'P' :  inputstream = new FileInputStream("Images\\w_pawn_2x_ns.png"); break;
-            }
-            ImageView imageView = new ImageView(new Image(inputstream));
-            imageView.setX((7-getFileFromIndex(i)) * 75);
-            imageView.setY((7 -getRankFromIndex(i))  * 75);
-            imageView.setFitHeight(75);
-            imageView.setFitWidth(75);
-            imageView.setPreserveRatio(true);
-            components.add(new Component( (7 -getFileFromIndex(i))  * 75,(7-getRankFromIndex(i)) * 75,imageView));
-        }
-        return  components;
-    }
-    private static int getRankFromIndex(int index){
-        return index / 8;
-    }
-    private static int getFileFromIndex(int index){
-        return index % 8;
-    }
-    public int getIndexFrom(int rank,int file){
-        return rank * 8 + file;
-    }
+    Board board = new Board();
+    String fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1 2";
     public GameGrid() {
-        PositionFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        board.loadFromFen(fen);
     }
-    public ArrayList<Point> getValidMovesForPiece(){
-        Board b = new Board();
-        List<Move> moves = b.legalMoves();
-        for (Move m : moves){
-            System.out.println(m.toString());
+    public ArrayList<Move> movesForPiece(Square fromSquare){
+        ArrayList<Move> ret = new ArrayList<>();
+        for(Move m :board.legalMoves()){
+            if(m.getFrom() == fromSquare){
+                ret.add(m);
+            }
         }
-        return new ArrayList<Point>();
+        return ret;
+    }
+    private Move getBestMove(){
+        return board.legalMoves().get(0);
     }
 
+    public Board getBoard() {
+        return board;
+    }
 
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    public String getFen() {
+        return fen;
+    }
+
+    public void setFen(String fen) {
+        this.fen = fen;
+    }
+    public String[][] getGrid() {
+        String[] lines = board.toString().replace("\"",""). split("\n");
+        lines[8] = null;
+        int rows = 8;
+        int cols = 8;
+        String[][] array = new String[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            String[] elements = lines[i].split("");
+            for (int j = 0; j < cols; j++) {
+                array[i][j] = elements[j];
+            }
+        }
+        return array;
+    }
+    public Square getFromCords(int x,int y){
+        Rank rank = Rank.values()[7 - y];
+        File file = File.values()[ x];
+        Square square =  Square.encode(rank,file);
+        return square;
+    }
 }
