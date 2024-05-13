@@ -27,6 +27,7 @@ public class Controller implements Initializable {
     Square selectedSquare ;
     int x;
     int y;
+    ArrayList<Move> possibleMoves = new ArrayList<>();
     boolean hasSelectedPiece = false;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -38,27 +39,32 @@ public class Controller implements Initializable {
             double mouseAnchorY = mouseEvent.getSceneY();
             x = (int) ((mouseAnchorX/gridSize) % 8);
             y = (int) ((mouseAnchorY/gridSize) % 8);
-           for(Move m :gameGrid.movesForPiece(gameGrid.getFromCords(x,y))){
-                System.out.println(m.toString());
-            }
+            selectedSquare = gameGrid.getFromCords(x,y);
+            System.out.println("Selected square : " +  selectedSquare.value());
            if(!hasSelectedPiece){
-                selectedSquare = gameGrid.getFromCords(x,y);
-                hasSelectedPiece = !hasSelectedPiece;
+               possibleMoves = gameGrid.movesForPiece(selectedSquare);
+               for (Move m : possibleMoves){
+                   System.out.println( "Possible moves : " + m.toString());
+               }
+               hasSelectedPiece = !hasSelectedPiece;
            }else {
-            for(Move m : gameGrid.movesForPiece(selectedSquare)){
-                if(Objects.equals(m.getTo().value(), selectedSquare.value().toLowerCase())){
-                    gameGrid.getBoard().doMove(m);
+            for(Move m : possibleMoves){
+                if(Objects.equals(m.getTo().value(), selectedSquare.value())){
+                    HandelMove(m);
                     DrawGame();
+                    hasSelectedPiece = !hasSelectedPiece;
                 }
             }
-               hasSelectedPiece = !hasSelectedPiece;
            }
         });
     }
-    public  void HandelMove(){
-
+    public void HandelMove(Move move){
+        gameGrid.getBoard().doMove(move);
+        gameGrid.getBoard().doMove(gameGrid.getBestMove());
     }
     public void DrawGame()  {
+        pane.getChildren().clear();
+        gridHandler.updateGrid();
         try {
             FileInputStream inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png");
             for (int x = 0; x <= 7; x++) {
@@ -116,32 +122,4 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
     }
-  /*  public  ArrayList<Component> getImageGrid() throws FileNotFoundException {
-        FileInputStream inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png");
-        ArrayList<Component> components = new ArrayList<>();
-        for (int i = 63; i >= 0 ; i--){
-            switch (board[i]){
-                case "r" :  inputstream = new FileInputStream("Images\\b_rook_2x_ns.png"); break;
-                case "R" :  inputstream = new FileInputStream("Images\\w_rook_2x_ns.png"); break;
-                case "n" :  inputstream = new FileInputStream("Images\\b_knight_2x_ns.png"); break;
-                case "N" :  inputstream = new FileInputStream("Images\\W_knight_2x_ns.png"); break;
-                case "b" :  inputstream = new FileInputStream("Images\\b_bishop_2x_ns.png"); break;
-                case "B" :  inputstream = new FileInputStream("Images\\w_bishop_2x_ns.png"); break;
-                case "q" :  inputstream = new FileInputStream("Images\\b_queen_2x_ns.png"); break;
-                case "Q" :  inputstream = new FileInputStream("Images\\w_queen_2x_ns.png"); break;
-                case "k" :  inputstream = new FileInputStream("Images\\b_king_2x_ns.png"); break;
-                case "K" :  inputstream = new FileInputStream("Images\\w_king_2x_ns.png"); break;
-                case "p" :  inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png"); break;
-                case "P" :  inputstream = new FileInputStream("Images\\w_pawn_2x_ns.png"); break;
-            }
-            ImageView imageView = new ImageView(new Image(inputstream));
-            imageView.setX((7-getFileFromIndex(i)) * 75);
-            imageView.setY((7 -getRankFromIndex(i))  * 75);
-            imageView.setFitHeight(75);
-            imageView.setFitWidth(75);
-            imageView.setPreserveRatio(true);
-            components.add(new Component( (7 -getFileFromIndex(i))  * 75,(7-getRankFromIndex(i)) * 75,imageView));
-        }
-        return  components;
-    }*/
 }

@@ -31,7 +31,8 @@ public class GameGrid {
         }
         return ret;
     }
-    private Move getBestMove(){
+    public Move getBestMove(){
+
         return board.legalMoves().get(0);
     }
 
