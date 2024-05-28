@@ -53,7 +53,6 @@ public class Controller implements Initializable {
                 if(m.getTo() == selectedSquare){
                     gameGrid.getBoard().doMove(m);
                     DrawGame();
-                    gameGrid.getBoard().doMove(gameGrid.getBestMove());
                 }
             }
                hasSelectedPiece = !hasSelectedPiece;
