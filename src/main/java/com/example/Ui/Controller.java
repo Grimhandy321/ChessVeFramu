@@ -60,12 +60,11 @@ public class Controller implements Initializable {
             if(moved) {
                 hasSelectedPiece = !hasSelectedPiece;
                 gameGrid.getBoard().doMove(gameGrid.getBestMove());
+                DrawGame();
+                moved = false;
             }
            }
         });
-    }
-    public  void HandelMove(){
-
     }
     public void DrawGame()  {
         pane.getChildren().clear();
