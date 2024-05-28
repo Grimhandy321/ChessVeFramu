@@ -42,14 +42,18 @@ public class Controller implements Initializable {
            if(!hasSelectedPiece){
                selectedSquare = gameGrid.getFromCords(x,y);
                moves =  gameGrid.movesForPiece(selectedSquare);
+               System.out.println("Selected square: " +  selectedSquare);
+                for (Move m:moves){
+                    System.out.println("move: " + m.getTo() );
+                }
                hasSelectedPiece = !hasSelectedPiece;
            }else {
                selectedSquare = gameGrid.getFromCords(x,y);
             for(Move m : moves){
-                System.out.println(m.getTo().value() + selectedSquare.value().toLowerCase());
-                if(Objects.equals(m.getTo().value(), selectedSquare.value().toLowerCase())){
+                if(m.getTo() == selectedSquare){
                     gameGrid.getBoard().doMove(m);
                     DrawGame();
+                    gameGrid.getBoard().doMove(gameGrid.getBestMove());
                 }
             }
                hasSelectedPiece = !hasSelectedPiece;
@@ -60,6 +64,8 @@ public class Controller implements Initializable {
 
     }
     public void DrawGame()  {
+        pane.getChildren().clear();
+        gridHandler.updateGrid();
         try {
             FileInputStream inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png");
             for (int x = 0; x <= 7; x++) {

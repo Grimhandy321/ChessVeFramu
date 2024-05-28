@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.github.bhlangonijr.chesslib.Board;
@@ -32,8 +33,7 @@ public class GameGrid {
         return ret;
     }
     public Move getBestMove(){
-
-        return board.legalMoves().get(0);
+       return board.legalMoves().get(0);
     }
 
     public Board getBoard() {
