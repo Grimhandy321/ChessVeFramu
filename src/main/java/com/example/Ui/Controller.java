@@ -29,6 +29,7 @@ public class Controller implements Initializable {
     int x;
     int y;
     boolean hasSelectedPiece = false;
+    boolean moved = false;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane);
@@ -53,9 +54,13 @@ public class Controller implements Initializable {
                 if(m.getTo() == selectedSquare){
                     gameGrid.getBoard().doMove(m);
                     DrawGame();
+                    moved = true;
                 }
             }
-               hasSelectedPiece = !hasSelectedPiece;
+            if(moved) {
+                hasSelectedPiece = !hasSelectedPiece;
+                gameGrid.getBoard().doMove(gameGrid.getBestMove());
+            }
            }
         });
     }
