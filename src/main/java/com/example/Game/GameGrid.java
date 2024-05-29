@@ -1,15 +1,10 @@
 package com.example.Game;
 
-import com.example.Ui.Component;
 import com.github.bhlangonijr.chesslib.*;
 import com.github.bhlangonijr.chesslib.move.Move;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Timer;
 
 
 public class GameGrid {
@@ -18,6 +13,7 @@ public class GameGrid {
     public GameGrid() {
         board.loadFromFen(fen);
     }
+    M_Timer timer;
 
     public ArrayList<Move> movesForPiece(Square fromSquare) {
         ArrayList<Move> ret = new ArrayList<>();
@@ -30,7 +26,8 @@ public class GameGrid {
     }
 
     public Move getBestMove() {
-        return board.legalMoves().get(0);
+       timer = new M_Timer(1000);
+        return Think(board);
     }
 
     public Board getBoard() {
@@ -43,7 +40,7 @@ public class GameGrid {
         Move newChosenMove = board.legalMoves().getLast();
         int depth = 1;
 
-        while (timer < timer.MillisecondsRemaining / 30) {
+        while (timer.getCurrentTime() < timer.getRemainingTime() / 3) {
             chosenMove = newChosenMove;
             evaluate(newChosenMove, depth++, -1000000000, 1000000000);
         }
@@ -60,6 +57,7 @@ public class GameGrid {
         if (depth == 0) {
             for (PieceList pieceList : getPieceList()) {
                 eval += (int) pieceList.getPieceType().ordinal() * pieceList.getList().size() * (pieceList.getSide() == board.getSideToMove() ? 20 : -20);
+                timer.decrement();
             }
             return eval;
         }
@@ -73,7 +71,7 @@ public class GameGrid {
             eval = -evaluate(null, depth - (board.isKingAttacked() ? 0 : 1), -beta, -alpha);
             board.undoMove();
 
-            if (timer.MillisecondsElapsedThisTurn > timer.MillisecondsRemaining / 30) {
+            if (timer.getCurrentTime() < timer.getRemainingTime() / 3) {
                 return 0;
             }
 
