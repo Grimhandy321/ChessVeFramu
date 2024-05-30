@@ -28,7 +28,7 @@ public class GameGrid {
 
     public Move getBestMove() {
         Engine engine = new Engine();
-        return engine.Think(board);
+        System.out.println(board.g);
     }
 
     public Board getBoard() {
@@ -68,22 +68,4 @@ public class GameGrid {
         return square;
     }
 
-    public ArrayList<PieceList> getPieceList() {
-        Piece[] pieces = board.boardToArray();
-        ArrayList<PieceList> pieceLists = new ArrayList<>();
-        for (Piece piece : pieces) {
-            boolean added = false;
-            for (PieceList pieceList : pieceLists) {
-                if (piece.getPieceType() == pieceList.getPieceType() && piece.getPieceSide() == pieceList.getSide() ) {
-                    pieceList.Add(piece);
-                    added = true;
-                }
-            }
-            if (!added && !Objects.equals(piece.value(), "NONE")) {
-                pieceLists.add(new PieceList(piece.getPieceType(), piece.getPieceSide(), piece));
-            }
-
-        }
-        return pieceLists;
-    }
 }
