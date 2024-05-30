@@ -14,8 +14,7 @@ public class GameGrid {
     public GameGrid() {
         board.loadFromFen(fen);
     }
-    M_Timer timer;
-    Move bestRootMove;
+    Engine engine = new Engine();
 
     public ArrayList<Move> movesForPiece(Square fromSquare) {
         ArrayList<Move> ret = new ArrayList<>();
@@ -28,20 +27,13 @@ public class GameGrid {
     }
 
     public Move getBestMove() {
-       timer = new M_Timer(100000000);
-        return Think(board);
+        Engine engine = new Engine();
+        return engine.Think(board);
     }
 
     public Board getBoard() {
         return board;
     }
-
-    public Move Think(Board board) {
-        return null;
-    }
-
-
-
     public void setBoard(Board board) {
         this.board = board;
     }

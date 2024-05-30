@@ -6,15 +6,16 @@ import com.github.bhlangonijr.chesslib.move.Move;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.Timer;
 
 public class Engine {
     Move bestRootMove;
     Board board;
-    Timer timer;
     int searchDepth = 0;
     CountdownTimer countdownTimer;
     public int getPieceValue(Piece piece) {
+        if(piece.getPieceType() == null){
+            return 0;
+        }
         switch (piece.getPieceType()) {
             case KING -> {
                 return 0;
@@ -31,19 +32,21 @@ public class Engine {
             case PAWN -> {
                 return 1;
             }
+            default -> {
+                return 0;
+            }
         }
-        return 0;
     }
-    public Move Think(Board board, Timer timer) {
+    public Move Think(Board board) {
         this.board = board;
-        this.timer = timer;
-        countdownTimer = new CountdownTimer(1000);
+        countdownTimer = new CountdownTimer(10000);
+        countdownTimer.start();
         int searchDepth = 0;
-
         try {
             for (;;)
-                Search(++searchDepth, -30000, 30000, 0);
+                Search(++searchDepth, -25000, 25000, 0);
         } catch (Exception e) {
+            System.out.println(e.toString());
             return bestRootMove;
         }
 
@@ -52,7 +55,7 @@ public class Engine {
         if (depth <= 0 && alpha < currentEval)
             alpha = currentEval;
 
-      List<Move> moves = board.legalMoves().stream().sorted((m1, m2) -> {
+      List<Move> moves = board.legalMoves().stream().sorted((m2, m1) -> {
           int cmp = Boolean.compare(m2 == bestRootMove, m1 == bestRootMove);
           if (cmp != 0) return cmp;
           cmp = Integer.compare(getPieceValue(getMoveCapture(m2)), getPieceValue(getMoveCapture(m1)));
@@ -64,18 +67,13 @@ public class Engine {
             if (alpha >= beta)
                 break;
             board.doMove(move);
-            double score =
-                    board.isDraw() ? 0 :
-                            -Search(depth - 1, -beta, -alpha,
-                                    Math.log(board.legalMoves().size())
-                                            - currentEval
-                            );
+            double score = board.isDraw() ? 0 : -Search(depth - 1, -beta, -alpha, Math.log(board.legalMoves().size()) - currentEval);
             if (score > alpha) {
                 alpha = score;
                 if (depth == searchDepth)
-                    bestRootMove = move;
+                    this.bestRootMove = move;
             }
-            if(countdownTimer.isDone()){
+            if(countdownTimer.isDone() ){
                 throw new Exception();
             }
             board.undoMove();
