@@ -23,8 +23,8 @@ public class M_Timer {
         return maxTime - currentTime;
     }
     public void decrement(){
-        if(currentTime > 0){
-            currentTime--;
+        if(currentTime != maxTime){
+            currentTime++;
         }
     }
 }

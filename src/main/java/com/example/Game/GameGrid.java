@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.Timer;
 
 
+
 public class GameGrid {
     Board board = new Board();
     String fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1 2";
@@ -14,6 +15,7 @@ public class GameGrid {
         board.loadFromFen(fen);
     }
     M_Timer timer;
+    Move bestRootMove;
 
     public ArrayList<Move> movesForPiece(Square fromSquare) {
         ArrayList<Move> ret = new ArrayList<>();
@@ -26,7 +28,7 @@ public class GameGrid {
     }
 
     public Move getBestMove() {
-       timer = new M_Timer(1000);
+       timer = new M_Timer(100000000);
         return Think(board);
     }
 
@@ -35,60 +37,9 @@ public class GameGrid {
     }
 
     public Move Think(Board board) {
-
-        Move chosenMove = board.legalMoves().get(0);
-        Move newChosenMove = board.legalMoves().getLast();
-        int depth = 1;
-
-        while (timer.getCurrentTime() < timer.getRemainingTime() / 3) {
-            chosenMove = newChosenMove;
-            evaluate(newChosenMove, depth++, -1000000000, 1000000000);
-        }
-
-        return chosenMove;
+        return null;
     }
-    private int evaluate(Move bestMove, int depth, int alpha, int beta)
-    {
-        if (board.isDraw()) {
-            return 0;
-        }
 
-        int eval = board.legalMoves().size() - board.getMoveCounter(), iMax = -1000000 * depth;
-        if (depth == 0) {
-            for (PieceList pieceList : getPieceList()) {
-                eval += (int) pieceList.getPieceType().ordinal() * pieceList.getList().size() * (pieceList.getSide() == board.getSideToMove() ? 20 : -20);
-                timer.decrement();
-            }
-            return eval;
-        }
-
-        List<Move> sortedMoves = board.legalMoves().stream()
-                .sorted((m1, m2) -> Integer.compare(m2.getType().ordinal(), m1.getType().ordinal()))
-                .toList();
-
-        for (Move move : sortedMoves) {
-            board.doMove(move);
-            eval = -evaluate(null, depth - (board.isKingAttacked() ? 0 : 1), -beta, -alpha);
-            board.undoMove();
-
-            if (timer.getCurrentTime() < timer.getRemainingTime() / 3) {
-                return 0;
-            }
-
-            if (eval > iMax) {
-                iMax = eval;
-                bestMove = move;
-            }
-            if (eval > alpha) {
-                alpha = eval;
-            }
-            if (alpha >= beta) {
-                break;
-            }
-        }
-
-        return iMax;
-    }
 
 
     public void setBoard(Board board) {
@@ -131,15 +82,16 @@ public class GameGrid {
         for (Piece piece : pieces) {
             boolean added = false;
             for (PieceList pieceList : pieceLists) {
-                if (piece.getPieceType() == pieceList.getPieceType()) {
+                if (piece.getPieceType() == pieceList.getPieceType() && piece.getPieceSide() == pieceList.getSide() ) {
                     pieceList.Add(piece);
                     added = true;
                 }
             }
-            if (!added) {
+            if (!added && !Objects.equals(piece.value(), "NONE")) {
                 pieceLists.add(new PieceList(piece.getPieceType(), piece.getPieceSide(), piece));
             }
 
         }
+        return pieceLists;
     }
 }
