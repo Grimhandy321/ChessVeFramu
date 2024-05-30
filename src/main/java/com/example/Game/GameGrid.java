@@ -28,7 +28,7 @@ public class GameGrid {
 
     public Move getBestMove() {
         Engine engine = new Engine();
-        System.out.println(board.g);
+        return engine.Think(board);
     }
 
     public Board getBoard() {
