@@ -2,7 +2,6 @@ package com.example.Ui;
 
 import com.example.Game.CountdownTimer;
 import com.example.Game.GameGrid;
-import com.github.bhlangonijr.chesslib.File;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import javafx.fxml.FXML;
@@ -17,12 +16,12 @@ import javafx.scene.text.Text;
 import javax.imageio.ImageIO;
 
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import static java.lang.StringTemplate.STR;
 
 public class Controller implements Initializable {
     private int gridSize = 75;
@@ -97,55 +96,52 @@ public class Controller implements Initializable {
     public void DrawGame()  {
         pane.getChildren().clear();
         gridHandler.updateGrid();
-        String file;
+        String file = new String();
         try {
-            file = "Images/b_pawn_2x_ns.png";
             for (int x = 0; x <= 7; x++) {
                 for (int y = 0; y <= 7; y++) {
-                    /*
+
                     switch (gameGrid.getGrid()[y][x]) {
                         case "r":
-                            file = "Images/b_rook_2x_ns.png";
+                            file = "b_rook_2x_ns.png";
                             break;
                         case "R":
-                            file = "Images/w_rook_2x_ns.png";
+                            file = "w_rook_2x_ns.png";
                             break;
                         case "n":
-                            file = "Images/b_knight_2x_ns.png";
+                            file = "b_knight_2x_ns.png";
                             break;
                         case "N":
-                            file = "Images/W_knight_2x_ns.png";
+                            file = "W_knight_2x_ns.png";
                             break;
                         case "b":
-                            file = "Images/b_bishop_2x_ns.png";
+                            file = "b_bishop_2x_ns.png";
                             break;
                         case "B":
-                            file = "Images/w_bishop_2x_ns.png";
+                            file = "w_bishop_2x_ns.png";
                             break;
                         case "q":
-                            file = "Images/b_queen_2x_ns.png";
+                            file = "b_queen_2x_ns.png";
                             break;
                         case "Q":
-                            file = "Images/w_queen_2x_ns.png";
+                            file = "w_queen_2x_ns.png";
                             break;
                         case "k":
-                            file = "Images/b_king_2x_ns.png";
+                            file = "b_king_2x_ns.png";
                             break;
                         case "K":
-                            file = "Images/w_king_2x_ns.png";
+                            file = "w_king_2x_ns.png";
                             break;
                         case "p":
-                            file = "Images/b_pawn_2x_ns.png";
+                            file = "b_pawn_2x_ns.png";
                             break;
                         case "P":
-                            file = "Images/w_pawn_2x_ns.png";
+                            file = "w_pawn_2x_ns.png";
                             break;
                         case ".":
                             continue;
                     }
-                     */
-
-                    BufferedImage bufferedImage = ImageIO.read(getClass().getResource(file));
+                    BufferedImage bufferedImage = ImageIO.read(Objects.requireNonNull(Controller.class.getResource(file)));
                     ImageView imageView = new ImageView(convertToFxImage(bufferedImage));
                     imageView.setX(x * 75);
                     imageView.setY(y * 75);
