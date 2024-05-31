@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Engine {
-    int searchDepth = 8;
+    int searchDepth = 3;
     public int EvaluatePosition(Board board) {
         int eval = 0;
         eval += board.getPieceLocation(Piece.BLACK_ROOK).size() * 500;

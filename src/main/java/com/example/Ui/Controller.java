@@ -1,14 +1,22 @@
 package com.example.Ui;
 
+import com.example.Game.CountdownTimer;
 import com.example.Game.GameGrid;
+import com.github.bhlangonijr.chesslib.File;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javax.imageio.ImageIO;
 
+import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -30,16 +38,28 @@ public class Controller implements Initializable {
     int y;
     boolean hasSelectedPiece = false;
     boolean moved = false;
+    boolean isGameFinished = false;
+    int gameTime ;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane);
         gridHandler.updateGrid();
+        CountdownTimer countdownTimer = new CountdownTimer();
+        countdownTimer.start();
         DrawGame();
         pane.setOnMousePressed(mouseEvent -> {
             double  mouseAnchorX = mouseEvent.getSceneX();
             double mouseAnchorY = mouseEvent.getSceneY();
             x = (int) ((mouseAnchorX/gridSize) % 8);
             y = (int) ((mouseAnchorY/gridSize) % 8);
+            if(isGameFinished){
+                Text text = new Text();
+                text.setFont(new Font(50));
+                text.setX(pane.getHeight()/2 -200 );
+                text.setY(pane.getHeight()/2 );
+                text.setText(STR."Game over : \{gameTime}");
+                pane.getChildren().add(text);
+            }
            if(!hasSelectedPiece){
                selectedSquare = gameGrid.getFromCords(x,y);
                moves =  gameGrid.movesForPiece(selectedSquare);
@@ -55,12 +75,20 @@ public class Controller implements Initializable {
                     gameGrid.getBoard().doMove(m);
                     DrawGame();
                     moved = true;
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
             if(moved) {
                 hasSelectedPiece = !hasSelectedPiece;
                 gameGrid.getBoard().doMove(gameGrid.getBestMove());
                 DrawGame();
+                if(gameGrid.getBoard().isMated()){
+                    isGameFinished = true;
+                }
                 moved = false;
             }
            }
@@ -69,51 +97,56 @@ public class Controller implements Initializable {
     public void DrawGame()  {
         pane.getChildren().clear();
         gridHandler.updateGrid();
+        String file;
         try {
-            FileInputStream inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png");
+            file = "Images/b_pawn_2x_ns.png";
             for (int x = 0; x <= 7; x++) {
                 for (int y = 0; y <= 7; y++) {
+                    /*
                     switch (gameGrid.getGrid()[y][x]) {
                         case "r":
-                            inputstream = new FileInputStream("Images\\b_rook_2x_ns.png");
+                            file = "Images/b_rook_2x_ns.png";
                             break;
                         case "R":
-                            inputstream = new FileInputStream("Images\\w_rook_2x_ns.png");
+                            file = "Images/w_rook_2x_ns.png";
                             break;
                         case "n":
-                            inputstream = new FileInputStream("Images\\b_knight_2x_ns.png");
+                            file = "Images/b_knight_2x_ns.png";
                             break;
                         case "N":
-                            inputstream = new FileInputStream("Images\\W_knight_2x_ns.png");
+                            file = "Images/W_knight_2x_ns.png";
                             break;
                         case "b":
-                            inputstream = new FileInputStream("Images\\b_bishop_2x_ns.png");
+                            file = "Images/b_bishop_2x_ns.png";
                             break;
                         case "B":
-                            inputstream = new FileInputStream("Images\\w_bishop_2x_ns.png");
+                            file = "Images/w_bishop_2x_ns.png";
                             break;
                         case "q":
-                            inputstream = new FileInputStream("Images\\b_queen_2x_ns.png");
+                            file = "Images/b_queen_2x_ns.png";
                             break;
                         case "Q":
-                            inputstream = new FileInputStream("Images\\w_queen_2x_ns.png");
+                            file = "Images/w_queen_2x_ns.png";
                             break;
                         case "k":
-                            inputstream = new FileInputStream("Images\\b_king_2x_ns.png");
+                            file = "Images/b_king_2x_ns.png";
                             break;
                         case "K":
-                            inputstream = new FileInputStream("Images\\w_king_2x_ns.png");
+                            file = "Images/w_king_2x_ns.png";
                             break;
                         case "p":
-                            inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png");
+                            file = "Images/b_pawn_2x_ns.png";
                             break;
                         case "P":
-                            inputstream = new FileInputStream("Images\\w_pawn_2x_ns.png");
+                            file = "Images/w_pawn_2x_ns.png";
                             break;
                         case ".":
                             continue;
                     }
-                    ImageView imageView = new ImageView(new Image(inputstream));
+                     */
+
+                    BufferedImage bufferedImage = ImageIO.read(getClass().getResource(file));
+                    ImageView imageView = new ImageView(convertToFxImage(bufferedImage));
                     imageView.setX(x * 75);
                     imageView.setY(y * 75);
                     imageView.setFitHeight(75);
@@ -125,6 +158,20 @@ public class Controller implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+    private static Image convertToFxImage(BufferedImage image) {// java Moment
+        WritableImage writableImage = null;
+        if (image != null) {
+            writableImage = new WritableImage(image.getWidth(), image.getHeight());
+            PixelWriter pw = writableImage.getPixelWriter();
+            for (int x = 0; x < image.getWidth(); x++) {
+                for (int y = 0; y < image.getHeight(); y++) {
+                    pw.setArgb(x, y, image.getRGB(x, y));
+                }
+            }
+        }
+
+        return new ImageView(writableImage).getImage();
     }
   /*  public  ArrayList<Component> getImageGrid() throws FileNotFoundException {
         FileInputStream inputstream = new FileInputStream("Images\\b_pawn_2x_ns.png");

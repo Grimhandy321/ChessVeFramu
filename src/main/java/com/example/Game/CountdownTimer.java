@@ -8,8 +8,7 @@ public class CountdownTimer {
     private Timer timer;
     private boolean isDone = false;
 
-    public CountdownTimer(long milliseconds) {
-        this.milliseconds = milliseconds;
+    public CountdownTimer() {
         this.timer = new Timer();
     }
 
@@ -21,12 +20,7 @@ public class CountdownTimer {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (milliseconds > 0) {
-                    milliseconds -= 10;
-                } else {
-                    timer.cancel();
-                    isDone = true;
-                }
+                    milliseconds += 10;
             }
         }, 0, 10); // Adjust interval to 10 milliseconds for better resolution
     }
