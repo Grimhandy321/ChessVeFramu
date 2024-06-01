@@ -56,7 +56,7 @@ public class Controller implements Initializable {
                 text.setFont(new Font(50));
                 text.setX(pane.getHeight()/2 -200 );
                 text.setY(pane.getHeight()/2 );
-                text.setText(STR."Game over : \{gameTime}");
+                text.setText("Game over"+ gameTime );
                 pane.getChildren().add(text);
             }
            if(!hasSelectedPiece){
