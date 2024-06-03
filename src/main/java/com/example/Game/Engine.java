@@ -14,6 +14,7 @@ import java.util.Random;
 
 public class Engine {
     int searchDepth = 3;
+
     public int EvaluatePosition(Board board) {
         int eval = 0;
         eval += board.getPieceLocation(Piece.BLACK_ROOK).size() * 500;
@@ -103,16 +104,20 @@ public class Engine {
     public int getValueOfAtSquare(Board board, Square square) {
         Piece piece = board.getPiece(square);
         int i = 0;
-        switch (piece.getPieceType()){
-            case KNIGHT -> i = 2;
-            case PAWN -> i =1;
-            case ROOK -> i=5;
-            case BISHOP -> i=2;
-            case QUEEN -> i=7;
-            case KING -> i=8;
-            case null -> i=0;
-            case NONE -> {
-                i=0;
+        if (piece.getPieceType() == null) {
+            i = 0;
+        } else {
+            switch (piece.getPieceType()) {
+                case KNIGHT -> i = 2;
+                case PAWN -> i = 1;
+                case ROOK -> i = 5;
+                case BISHOP -> i = 2;
+                case QUEEN -> i = 7;
+                case KING -> i = 8;
+                case NONE -> {
+                    i = 0;
+                }
+                default -> i = 0;
             }
         }
         return i;

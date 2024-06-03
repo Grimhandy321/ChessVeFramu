@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static java.lang.StringTemplate.STR;
 
 public class Controller implements Initializable {
     private int gridSize = 75;
